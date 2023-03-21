@@ -117,7 +117,7 @@ request_api_job_results <- function(job_id){
 }
 
 
-tabuilse_api_response <- function(job_data){
+tabulise_api_response <- function(job_data){
   urls <- tibble::tibble(job_data)
 
 
