@@ -2,13 +2,18 @@
 % Please edit documentation in R/gb-search.R
 \name{eng_search}
 \alias{eng_search}
-\title{Title}
+\title{Search the Environment Agency LiDAR/Geo API for data in England.}
 \usage{
 eng_search(aoi)
 }
 \arguments{
-\item{aoi}{}
+\item{aoi}{A spatial area to request: Can be any of the following classes:
+sf, sfc or character. When a character is provided it must be a gdal readable
+spatial vector file format.}
+}
+\value{
+An object of class \code{gbl_catalog}
 }
 \description{
-Title
+Search the Environment Agency LiDAR/Geo API for data in England.
 }

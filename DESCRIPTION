@@ -10,11 +10,13 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
+    checkmate,
     cli,
     curl,
     dplyr,
     httr,
     jsonlite,
+    rlang,
     tibble,
     tidyr,
     wk

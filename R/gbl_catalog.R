@@ -13,7 +13,6 @@ gbl_catalog <- function(gbl_tab, aoi, date_time, tile_intersect=NULL){
 #'
 #' @param x
 #'
-#' @return
 #' @export
 #'
 #' @examples
@@ -27,23 +26,64 @@ print.gbl_catalog <- function(x){
 
 #' filter a gbl_catalog object
 #'
-#' Provides a new method for dplyr::filter
+#' wrapper for dplyr::filter for `gbl_catalog` objects
 #'
 #' @param x A gbl_catalog object
 #'
 #' @return A filtered gbl_catalog object
 #' @export
-#' @importFrom dplyr filter
 #'
 #' @examples
-filter.gbl_catalog <- function(x, ..., .by = NULL, .preserve = FALSE){
+filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE){
   x$gbl_tab <- dplyr::filter(x$gbl_tab, ..., .by=.by, .preserve=.preserve)
+
+  if (nrow(x$gbl_tab)==0){
+    len <- length(rlang::enquos(...))
+    cli::cli_abort(c(
+      "The filtered gbl_catalog is empty.",
+      "x"= "No assets match the {len} requested filter statement{?s}"))
+  }
+
   return(x)
 }
-# Required to export filter, otherwise:
-# Warning: declared S3 method 'filter.gbl_catalog' not found
-# because of stats::filter
 
+
+
+#' row bind multiple gbl_catalog objects
+#'
+#' wrapper for dplyr::bind_rows for `gbl_catalog` objects
+#'
+#' @param ...gbl_catalog objects to combine
+#' @param .id The name of an optional identifier column. Provide a string to
+#' create an output column that identifies each input. The column will use names
+#' if available, otherwise it will use positions.
+#'
+#' @return A filtered gbl_catalog object
 #' @export
 #'
-dplyr::filter
+#' @examples
+#'
+#'
+bind_catalogs <- function(..., .id= "AOI"){
+  print("lala")
+
+  gblcs <- list(...)
+  gblc_tabs <- gblcs |>
+    lapply(function(x) x$gbl_tab) |>
+    dplyr::bind_rows(.id=.id) |>
+    dplyr::distinct()
+
+  gblc_aois <- gblcs |>
+    lapply(function(x) sf::st_as_sf(x$aoi)) |>
+    dplyr::bind_rows() |>
+    sf::st_as_sfc()
+
+  gblc_dt <- gblcs |>
+    lapply(function(x) x$date_time) |>
+    unlist()
+
+  gbl_catalog(gblc_tabs, aoi = gblc_aois, date_time = gblc_dt)
+}
+
+
+

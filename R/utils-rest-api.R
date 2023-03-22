@@ -118,6 +118,7 @@ request_api_job_results <- function(job_id){
 
 
 tabulise_api_response <- function(job_data){
+
   urls <- tibble::tibble(job_data)
 
 
@@ -127,8 +128,18 @@ tabulise_api_response <- function(job_data){
 
   .cols <- colnames(y)[! colnames(y) %in% c("url")]
 
+  get_num <- function(x) as.numeric(stringr::str_extract(x, "(\\d)+"))
+
   dplyr::group_by(y, productName, resolutionName, year) |>
-    dplyr::reframe(urls = list(url))
+    dplyr::reframe(urls = list(url)) |>
+    dplyr::mutate(resolutionName =
+                    dplyr::case_when(stringr::str_detect(resolutionName, "CM")~
+                                       get_num(resolutionName) /100,
+                                     TRUE ~ get_num(resolutionName)),
+                  year=as.integer(year)) |>
+    dplyr::rename(resolution = resolutionName,
+                  product = productName)
 
 }
-
+as.numeric(stringr::str_extract("N/A", "(\\d)+"))
+stringr::str_detect("DTM 50CM", "CM")
