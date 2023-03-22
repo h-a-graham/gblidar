@@ -20,3 +20,5 @@ Imports:
     tibble,
     tidyr,
     wk
+Suggests: 
+    terra

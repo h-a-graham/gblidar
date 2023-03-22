@@ -4,7 +4,7 @@
 \alias{bind_catalogs}
 \title{row bind multiple gbl_catalog objects}
 \usage{
-bind_catalogs(..., .id)
+bind_catalogs(..., .id = "AOI")
 }
 \arguments{
 \item{.id}{The name of an optional identifier column. Provide a string to
