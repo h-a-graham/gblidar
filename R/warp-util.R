@@ -11,7 +11,7 @@
 #' @param progress logical - should a progress bar be shown.
 #' @param ... Not used.
 #'
-#' @return
+#' @return A raster file path.
 #' @noRd
 sf_warp_util <- function(sources,
                          destination,
@@ -57,7 +57,7 @@ sf_warp_util <- function(sources,
 #' @param options character vector with gdal options.
 #' @param progress logical - should a progress bar be shown.
 #'
-#' @return
+#' @return A raster file path
 #' @export
 #'
 #' @examples

@@ -27,6 +27,9 @@ merge_assets(
 
 \item{progress}{logical - should a progress bar be shown.}
 }
+\value{
+A raster file path
+}
 \description{
 uses gdal warp to merge raster assets into a single file.
 }
