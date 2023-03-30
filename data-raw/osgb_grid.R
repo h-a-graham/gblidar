@@ -5,7 +5,9 @@ library(sf)
 
 tf <- tempdir()
 
-usethis::use_directory("inst/bng_grids")
+grid_dir <- "inst/bng_grids"
+
+usethis::use_directory(grid_dir)
 
 all_grids <- file.path(tf,"os_bng_grids.7z")
 
@@ -20,7 +22,7 @@ st_layers(gpkg)
 
 bng_5km <- read_sf(gpkg, layer="5km_grid")
 
-write_sf(bng_5km, "inst/")
+write_sf(bng_5km, file.path(grid_dir, "os_bng_5km_grid.gpkg"))
 
 # usethis::use_data(osgb_grid, overwrite = TRUE, internal = TRUE)
 
