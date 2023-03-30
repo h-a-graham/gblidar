@@ -48,7 +48,7 @@
 asset_download <- function(x, target_dir, resume = FALSE,
                            progress = TRUE, timeout = Inf){
 
-  dl_files <- unlist(x$gbl_tab$urls)
+  dl_files <- gbl_urls(x)
 
   if (!dir.exists(target_dir)) dir.create(target_dir, recursive = TRUE)
 

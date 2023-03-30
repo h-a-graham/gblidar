@@ -86,4 +86,23 @@ bind_catalogs <- function(..., .id= "AOI"){
 }
 
 
+#' Return the data urls for a gbl_catalog object
+#'
+#' @param x A gbl_catalog object
+#' @param gdal should the direct gdal url (with /vszip//vsicurl prefix) be
+#' returned.
+#'
+#' @return a character vector of url paths.
+#' @export
+#'
+#' @examples
+gbl_urls <- function(x, gdal=FALSE){
 
+  if(isTRUE(gdal)){
+    urls <- unlist(x$gbl_tab$urls)
+  } else {
+    urls <- unlist(x$gbl_tab$gdal_urls)
+  }
+  return(urls)
+
+}
