@@ -15,7 +15,9 @@ eng_search <- function(aoi){
 
   aoi <- assert_aoi(aoi)
 
-  job <- create_rest_api_job(aoi)
+  search_aoi <- bng_tile_intersect(aoi)
+
+  job <- create_rest_api_job(sf::st_union(search_aoi))
 
   sub_job <- submit_rest_api_job(job$jobId)
 
@@ -23,11 +25,12 @@ eng_search <- function(aoi){
 
   url_df <- tabulise_api_response(job_results$data)
 
-  gblc <- gbl_catalog(gbl_tab = url_df,
-              aoi = aoi,
-              date_time = job_results$completedTimestamp)
-
-  add_gdal_paths(gblc)
+  gbl_catalog(
+    gbl_tab = url_df,
+    aoi = aoi,
+    date_time = job_results$completedTimestamp,
+    search_aoi = search_aoi
+  )
 }
 
 #place holder

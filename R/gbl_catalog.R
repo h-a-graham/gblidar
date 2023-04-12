@@ -1,13 +1,21 @@
-gbl_catalog <- function(gbl_tab, aoi, date_time, tile_intersect=NULL){
+gbl_catalog <- function(gbl_tab, aoi, date_time, search_aoi, tile_names){
   structure(
     list(
     gbl_tab = gbl_tab,
     aoi = aoi,
     date_time = date_time,
-    tile_intersect =tile_intersect
+    search_aoi = search_aoi,
+    tile_names = search_aoi$tile_name
   ),
   class="gbl_catalog")
 }
+
+bng_tile_intersect <- function(.aoi){
+  suppressWarnings({
+    sf::st_filter(osgb_grid(), .aoi, join=st_intersects)
+    })
+}
+
 
 #' print a gbl_catalog object
 #'
@@ -21,6 +29,22 @@ print.gbl_catalog <- function(x){
   print(x$gbl_tab, n=nrow(x$gbl_tab))
   message(crayon::green("AOI Geometry"))
   print(x$aoi)
+  message(crayon::cyan("Tile Names"))
+  print(x$tile_names)
+}
+
+
+#' Plot a gbl_catalog object
+#'
+#' @param x a gbl_catalog object
+#' @export
+#'
+#' @examples
+#'
+#'
+plot.gbl_catalog <- function(x){
+  plot(sf::st_geometry(x$search_aoi))
+  plot(sf::st_geometry(x$aoi), col="#21C6C1", add=TRUE)
 }
 
 
@@ -89,20 +113,11 @@ bind_catalogs <- function(..., .id= "AOI"){
 #' Return the data urls for a gbl_catalog object
 #'
 #' @param x A gbl_catalog object
-#' @param gdal should the direct gdal url (with /vszip//vsicurl prefix) be
-#' returned.
 #'
 #' @return a character vector of url paths.
 #' @export
 #'
 #' @examples
-gbl_urls <- function(x, gdal=FALSE){
-
-  if(isTRUE(gdal)){
-    urls <- unlist(x$gbl_tab$urls)
-  } else {
-    urls <- unlist(x$gbl_tab$gdal_urls)
-  }
-  return(urls)
-
+gbl_urls <- function(x){
+  unlist(x$gbl_tab$urls)
 }

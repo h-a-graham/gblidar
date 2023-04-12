@@ -141,5 +141,3 @@ tabulise_api_response <- function(job_data){
                   product = productName)
 
 }
-as.numeric(stringr::str_extract("N/A", "(\\d)+"))
-stringr::str_detect("DTM 50CM", "CM")
