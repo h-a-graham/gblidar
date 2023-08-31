@@ -21,9 +21,9 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 - [ ] Add Welsh Data
 - [ ] Write Tests
 
-\*\* Scottish and Welsh Data are yet to be added as the tricky thing to
-get right is the English ESRI API stuff - once this is stable we can
-slot the other nations in with relative ease I hope \*\*
+**Scottish and Welsh Data are yet to be added as the tricky thing to get
+right is the English ESRI API stuff - once this is stable we can slot
+the other nations in with relative ease I hope**
 
 ## Installation
 
