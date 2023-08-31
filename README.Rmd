@@ -19,6 +19,21 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+# To Do List:
+
+- [x]  Added options for merging rasters and exporting as SpatRaster, stars of character.
+- [x]  Generic merge for all rasters in gbl_catalog.
+- [ ]  chunk large requested areas to prevent exceeding the EA API limit.
+- [ ]  chunk mulitpolygon object requests as I don't think the EA API supports this.
+- [ ]  Add Scottish Data
+- [ ]  Add Welsh Data
+- [ ]  Write Tests
+
+**Scottish and Welsh Data are yet to be added as the tricky thing to get right 
+is the English ESRI API stuff - once this is stable we can slot the other nations
+in with relative ease I hope**
+
+
 ## Installation
 
 You can install the development version of gblidar from [GitHub](https://github.com/) with:
@@ -35,9 +50,13 @@ This is a super quick demo
 ```{r example}
 library(gblidar)
 library(sf)
+if (rlang::is_installed("terra")){
+  library(terra)
+  options(gblidar.out_raster_type = "SpatRaster")
+}
 
 scafell_box <- st_point(c(321633 , 507181))  |>
-  st_buffer(2000, endCapStyle = "SQUARE")  |>
+  st_buffer(2000)  |>
   st_sfc() |>
   st_set_crs(27700)
 
@@ -54,11 +73,7 @@ print(DTM_catalog)
 
 scafell_raster <- merge_assets(DTM_catalog, mask=TRUE)
 
-if (rlang::is_installed("terra")){
-  library(terra)
-  scafell <- rast(scafell_raster)
-  plot(scafell, col=grDevices::hcl.colors(50, palette = "Sunset"))
-}
+plot(scafell_raster, col=grDevices::hcl.colors(50, palette = "Sunset"))
 
 
 ```
