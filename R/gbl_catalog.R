@@ -120,8 +120,14 @@ bind_catalogs <- function(..., .id = "AOI") {
 #'
 #' @return a character vector of url paths.
 #' @export
-#'
-#' @examples
 gbl_urls <- function(x) {
   unlist(x$gbl_tab$urls)
+}
+
+#' Return the data file paths for a gbl_catalog object
+#' @param x A gbl_catalog object
+#' @return a character vector of file paths.
+#' @export
+gbl_paths <- function(x) {
+  unlist(x$gbl_tab$filenames)
 }
