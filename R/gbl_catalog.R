@@ -1,19 +1,26 @@
-gbl_catalog <- function(gbl_tab, aoi, date_time, search_aoi, tile_names){
+gbl_catalog <- function(gbl_tab, aoi, date_time, search_aoi, tile_names) {
   structure(
     list(
-    gbl_tab = gbl_tab,
-    aoi = aoi,
-    date_time = date_time,
-    search_aoi = search_aoi,
-    tile_names = search_aoi$tile_name
-  ),
-  class="gbl_catalog")
+      gbl_tab = gbl_tab,
+      aoi = aoi,
+      date_time = date_time,
+      search_aoi = search_aoi,
+      tile_names = search_aoi$tile_name
+    ),
+    class = "gbl_catalog"
+  )
 }
 
-bng_tile_intersect <- function(.aoi){
+bng_tile_intersect <- function(.aoi) {
+  if (sf::st_crs(.aoi)$epsg != 27700) {
+    .aoi <- sf::st_transform(.aoi, 27700)
+    cli::cli_warn(c("The provided AOI was not in BNG",
+      "i" = "it has been transformed to BNG (EPSG:27700)"
+    ))
+  }
   suppressWarnings({
-    sf::st_filter(osgb_grid(), .aoi, join=st_intersects)
-    })
+    sf::st_filter(osgb_grid(), .aoi, join = sf::st_intersects)
+  })
 }
 
 
@@ -24,9 +31,9 @@ bng_tile_intersect <- function(.aoi){
 #' @export
 #'
 #' @examples
-print.gbl_catalog <- function(x){
+print.gbl_catalog <- function(x) {
   message(crayon::cyan("Data Catalog"))
-  print(x$gbl_tab, n=nrow(x$gbl_tab))
+  print(x$gbl_tab, n = nrow(x$gbl_tab))
   message(crayon::green("AOI Geometry"))
   print(x$aoi)
   message(crayon::cyan("Tile Names"))
@@ -40,11 +47,9 @@ print.gbl_catalog <- function(x){
 #' @export
 #'
 #' @examples
-#'
-#'
-plot.gbl_catalog <- function(x){
+plot.gbl_catalog <- function(x) {
   plot(sf::st_geometry(x$search_aoi))
-  plot(sf::st_geometry(x$aoi), col="#21C6C1", add=TRUE)
+  plot(sf::st_geometry(x$aoi), col = "#21C6C1", add = TRUE)
 }
 
 
@@ -58,14 +63,15 @@ plot.gbl_catalog <- function(x){
 #' @export
 #'
 #' @examples
-filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE){
-  x$gbl_tab <- dplyr::filter(x$gbl_tab, ..., .by=.by, .preserve=.preserve)
+filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE) {
+  x$gbl_tab <- dplyr::filter(x$gbl_tab, ..., .by = .by, .preserve = .preserve)
 
-  if (nrow(x$gbl_tab)==0){
+  if (nrow(x$gbl_tab) == 0) {
     len <- length(rlang::enquos(...))
     cli::cli_abort(c(
       "The filtered gbl_catalog is empty.",
-      "x"= "No assets match the {len} requested filter statement{?s}"))
+      "x" = "No assets match the {len} requested filter statement{?s}"
+    ))
   }
 
   return(x)
@@ -86,15 +92,13 @@ filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE){
 #' @export
 #'
 #' @examples
-#'
-#'
-bind_catalogs <- function(..., .id= "AOI"){
+bind_catalogs <- function(..., .id = "AOI") {
   print("lala")
 
   gblcs <- list(...)
   gblc_tabs <- gblcs |>
     lapply(function(x) x$gbl_tab) |>
-    dplyr::bind_rows(.id=.id) |>
+    dplyr::bind_rows(.id = .id) |>
     dplyr::distinct()
 
   gblc_aois <- gblcs |>
@@ -118,6 +122,6 @@ bind_catalogs <- function(..., .id= "AOI"){
 #' @export
 #'
 #' @examples
-gbl_urls <- function(x){
+gbl_urls <- function(x) {
   unlist(x$gbl_tab$urls)
 }
