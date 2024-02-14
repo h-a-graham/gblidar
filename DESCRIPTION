@@ -21,7 +21,9 @@ Imports:
     rlang,
     tibble,
     tidyr,
-    wk
+    wk,
+    checkmate,
+    tools
 Suggests: 
     stars,
     terra
