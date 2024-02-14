@@ -47,14 +47,6 @@ merge_assets <- function(x,
     !progress
   )
 
-  return_as_raster_class <- function(rc, src) {
-    switch(rc,
-      character = src,
-      SpatRaster = terra::rast(src),
-      stars = stars::read_stars(src)
-    )
-  }
-
   return_as_raster_class(raster_class, ras.src)
 }
 
