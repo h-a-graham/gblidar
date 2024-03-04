@@ -9,6 +9,15 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+gblidar aims to make accessing LiDAR data from across Great Britain as
+easy as possible. It provides functions to search the Environment
+Agency’s LiDAR catalogue, download composite products, and merge the
+data into a single raster. It also provides functions to access the data
+from the EA’s WCS services, which is significantly faster but only
+available for some composite products. This package is still in
+development and only supports English data for now but will be expanded
+to include Scotland and Wales in the future.
+
 # To Do List:
 
   - [x] Added options for merging rasters and exporting as SpatRaster,
@@ -19,10 +28,6 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
   - [ ] Add Scottish Data
   - [ ] Add Welsh Data
   - [ ] Write Tests
-
-**Scottish and Welsh Data are yet to be added as the tricky thing to get
-right is the English ESRI API stuff - once this is stable we can slot
-the other nations in with relative ease I hope**
 
 ## Installation
 
