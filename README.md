@@ -31,8 +31,7 @@ to include Scotland and Wales in the future.
 
 ## Installation
 
-You can install the development version of gblidar from
-[GitHub](https://github.com/) with:
+You can install the development version of gblidar from GitHub with:
 
 ``` r
 # install.packages("pak")
