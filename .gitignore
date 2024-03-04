@@ -5,3 +5,6 @@
 
 /DEV
 /*-test
+/wcs_cache/*
+
+*.tif

@@ -1,4 +1,3 @@
-
 #' merge raster assets
 #'
 #' uses gdal warp to merge raster assets into a single file.
@@ -17,46 +16,54 @@
 #' @export
 #'
 #' @examples
-merge_assets <- function(x,
-                         mask=FALSE,
-                         destination=NULL,
-                         resample = 'near',
-                         compression="DEFLATE",
-                         nodata = NULL,
-                         options=NULL,
-                         raster_class = getOption("gblidar.out_raster_type"),
-                         progress=getOption("gblidar.progress")){
-
+#' scafell_box <- sf::st_point(c(321633, 507181)) |>
+#'   sf::st_buffer(100) |>
+#'   sf::st_sfc() |>
+#'   sf::st_set_crs(27700)
+#'
+#' scafell_catalog <- eng_search(scafell_box)
+#'
+#' DTM_catalog <- scafell_catalog |>
+#'   filter_catalog(
+#'     product == "LIDAR Composite DTM",
+#'     resolution == 2,
+#'     year == 2022
+#'   )
+#' DTM_raster <- merge_assets(DTM_catalog)
+#' DTM_raster
+merge_assets <- function(
+    x,
+    mask = FALSE,
+    destination = NULL,
+    resample = "near",
+    compression = "DEFLATE",
+    nodata = NULL,
+    options = NULL,
+    raster_class = getOption("gblidar.out_raster_type"),
+    progress = getOption("gblidar.progress")) {
   assert_no_point_cloud(x)
   assert_rast(raster_class)
 
 
   gdal_srcs <- unpack_assets(x, progress)
 
-  if (isTRUE(mask)){
-
+  if (isTRUE(mask)) {
     cutline_path <- tempfile(fileext = ".gpkg")
     sf::write_sf(x$aoi, cutline_path)
-    options <- c('-cutline', cutline_path, "-crop_to_cutline", options)
+    options <- c("-cutline", cutline_path, "-crop_to_cutline", options)
   }
 
-  ras.src <- sf_warp_util(sources=gdal_srcs,
-               destination,
-               resample,
-               compression,
-               nodata,
-               options,
-               !progress)
-
-  return_as_raster_class <- function(rc, src){
-    switch(rc,
-           character = src,
-           SpatRaster = terra::rast(src),
-           stars = stars::read_stars(src))
-  }
+  ras.src <- sf_warp_util(
+    sources = gdal_srcs,
+    destination,
+    resample,
+    compression,
+    nodata,
+    options,
+    !progress
+  )
 
   return_as_raster_class(raster_class, ras.src)
-
 }
 
 
@@ -72,15 +79,17 @@ unpack_assets <- function(x, progress) {
 
   assets_zipped$save_location |>
     lapply(function(z) {
-      zd <- file.path(dirname(z),
-                      tools::file_path_sans_ext(basename(z)))
+      zd <- file.path(
+        dirname(z),
+        tools::file_path_sans_ext(basename(z))
+      )
 
       unzip(z, exdir = zd)
       list.files(zd,
-                 pattern = ".tif$",
-                 recursive = TRUE,
-                 full.names = TRUE)
-
+        pattern = ".tif$",
+        recursive = TRUE,
+        full.names = TRUE
+      )
     }) |>
     unlist()
 }

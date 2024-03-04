@@ -23,8 +23,7 @@ knitr::opts_chunk$set(
 
 - [x]  Added options for merging rasters and exporting as SpatRaster, stars of character.
 - [x]  Generic merge for all rasters in gbl_catalog.
-- [ ]  chunk large requested areas to prevent exceeding the EA API limit.
-- [ ]  chunk mulitpolygon object requests as I don't think the EA API supports this.
+- [x]  Add special functions for hitting the WCS data to get faster access to large composite areas.
 - [ ]  Add Scottish Data
 - [ ]  Add Welsh Data
 - [ ]  Write Tests
@@ -39,24 +38,35 @@ in with relative ease I hope**
 You can install the development version of gblidar from [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("h-a-graham/gblidar")
+# install.packages("pak")
+pak::pkg_install("h-a-graham/gblidar")
 ```
 
 ## Example
 
-This is a super quick demo
+This is a super quick demo where we can query the Environment Agency's entire
+LIDAR catalogue using the `eng_search` function. This will return a `gbl_catalog`
+object which can be used to filter the assets and then merge them into a single
+raster. In this example we search the area around Scafell Pike, use the 
+`filter_catalog` function to reduce the number of assets to just the 2m DTM 
+composite for 2022, and then use the `merge_assets` function to merge all the 
+assets into a single raster. By default the raster is saved to disk and the   
+file path is returned, but this can be changed using `raster_class` argument 
+in `merge_assets` to return a `stars` or `SpatRaster` object (or you can 
+alternatively set the global option `gblidar.out_raster_type` to "stars" or 
+"SpatRaster" as in the example below).
+
 
 ```{r example}
 library(gblidar)
 library(sf)
-if (rlang::is_installed("terra")){
+if (rlang::is_installed("terra")) {
   library(terra)
   options(gblidar.out_raster_type = "SpatRaster")
 }
 
-scafell_box <- st_point(c(321633 , 507181))  |>
-  st_buffer(2000)  |>
+scafell_box <- st_point(c(321633, 507181)) |>
+  st_buffer(2000) |>
   st_sfc() |>
   st_set_crs(27700)
 
@@ -65,17 +75,41 @@ scafell_catalog <- eng_search(scafell_box)
 print(scafell_catalog)
 
 DTM_catalog <- scafell_catalog |>
-  filter_catalog(product == "LIDAR Composite DTM",
-                 resolution == 2,
-                 year == 2022)
+  filter_catalog(
+    product == "LIDAR Composite DTM",
+    resolution == 2,
+    year == 2022
+  )
 
 print(DTM_catalog)
 
-scafell_raster <- merge_assets(DTM_catalog, mask=TRUE)
+scafell_raster <- merge_assets(DTM_catalog, mask = TRUE)
 
-plot(scafell_raster, col=grDevices::hcl.colors(50, palette = "Sunset"))
-
-
+plot(scafell_raster, col = grDevices::hcl.colors(50, palette = "Sunset"))
 ```
 
-...
+The EA have now released their latest composite products as WCS services 
+(Awesome!). To make best use of this, we provide the `eng_composite` function
+which can be used to directly download only the data you need for any area 
+in England. This is significantly faster than the `eng_search` function and is
+preferred if you are only interested in the latest composite products. Both
+elevation and hillshade data are available for "fz_dsm" (first return DSM),
+"dsm", "dtm", and "vom". 
+
+```{r example2}
+options(gblidar.progress = FALSE) # for readability in this example.
+
+search_box <- st_point(c(532054, 181145)) |>
+  st_buffer(500) |>
+  st_sfc() |>
+  st_set_crs(27700)
+
+# the elevation data for the first return DSM
+fz_dsm <- eng_composite(search_box, product = "fz_dsm")
+# the hillshade data for the last return DSM
+dsm_hs <- eng_composite(search_box, product = "dsm", product_type = "hillshade")
+
+par(mfrow = c(1, 2))
+plot(fz_dsm, col = hcl.colors(150, "mako"))
+plot(dsm_hs, col = hcl.colors(256, "Blues"), legend = FALSE)
+```
