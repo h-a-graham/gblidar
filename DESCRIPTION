@@ -26,6 +26,8 @@ Imports:
     tools
 Suggests: 
     stars,
-    terra
+    terra,
+    testthat (>= 3.0.0)
 Depends: 
     R (>= 2.10)
+Config/testthat/edition: 3
