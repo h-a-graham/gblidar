@@ -121,6 +121,20 @@ wcs_layers <- function(wcs_url) {
 #' @return A `character` file path, `SpatRaster` or `stars` object, depending
 #' on the `raster_class` argument.
 #' @export
+#' @examples
+#'
+#' search_box <- st_point(c(370126.5, 538567.1)) |>
+#'   st_buffer(50) |>
+#'   st_sfc() |>
+#'   st_set_crs(27700)
+#'
+#' fz_dsm <- eng_composite(search_box, product = "fz_dsm")
+#' dsm <- eng_composite(search_box, "dsm")
+#' dtm <- eng_composite(search_box, "dtm")
+#' vom <- eng_composite(search_box, "vom", "elevation")
+#'
+#' dsm_hs <- eng_composite(search_box, product = "dsm", product_type = "hillshade")
+#' dtm_hs <- eng_composite(search_box, "dtm", "hillshade")
 #'
 eng_composite <- function(
     aoi,

@@ -16,15 +16,31 @@
 #' @export
 #'
 #' @examples
-merge_assets <- function(x,
-                         mask = FALSE,
-                         destination = NULL,
-                         resample = "near",
-                         compression = "DEFLATE",
-                         nodata = NULL,
-                         options = NULL,
-                         raster_class = getOption("gblidar.out_raster_type"),
-                         progress = getOption("gblidar.progress")) {
+#' scafell_box <- sf::st_point(c(321633, 507181)) |>
+#'   sf::st_buffer(100) |>
+#'   sf::st_sfc() |>
+#'   sf::st_set_crs(27700)
+#'
+#' scafell_catalog <- eng_search(scafell_box)
+#'
+#' DTM_catalog <- scafell_catalog |>
+#'   filter_catalog(
+#'     product == "LIDAR Composite DTM",
+#'     resolution == 2,
+#'     year == 2022
+#'   )
+#' DTM_raster <- merge_assets(DTM_catalog)
+#' DTM_raster
+merge_assets <- function(
+    x,
+    mask = FALSE,
+    destination = NULL,
+    resample = "near",
+    compression = "DEFLATE",
+    nodata = NULL,
+    options = NULL,
+    raster_class = getOption("gblidar.out_raster_type"),
+    progress = getOption("gblidar.progress")) {
   assert_no_point_cloud(x)
   assert_rast(raster_class)
 

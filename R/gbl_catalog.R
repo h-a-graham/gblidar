@@ -30,7 +30,6 @@ bng_tile_intersect <- function(.aoi) {
 #'
 #' @export
 #'
-#' @examples
 print.gbl_catalog <- function(x) {
   message(crayon::cyan("Data Catalog"))
   print(x$gbl_tab, n = nrow(x$gbl_tab))
@@ -46,7 +45,6 @@ print.gbl_catalog <- function(x) {
 #' @param x a gbl_catalog object
 #' @export
 #'
-#' @examples
 plot.gbl_catalog <- function(x) {
   plot(sf::st_geometry(x$search_aoi))
   plot(sf::st_geometry(x$aoi), col = "#21C6C1", add = TRUE)
@@ -63,6 +61,19 @@ plot.gbl_catalog <- function(x) {
 #' @export
 #'
 #' @examples
+#' scafell_box <- sf::st_point(c(321633, 507181)) |>
+#'   sf::st_buffer(100) |>
+#'   sf::st_sfc() |>
+#'   sf::st_set_crs(27700)
+#'
+#' scafell_catalog <- eng_search(scafell_box)
+#'
+#' DTM_catalog <- scafell_catalog |>
+#'   filter_catalog(
+#'     product == "LIDAR Composite DTM",
+#'     resolution == 2,
+#'     year == 2022
+#'   )
 filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE) {
   x$gbl_tab <- dplyr::filter(x$gbl_tab, ..., .by = .by, .preserve = .preserve)
 
@@ -90,8 +101,6 @@ filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE) {
 #'
 #' @return A filtered gbl_catalog object
 #' @export
-#'
-#' @examples
 bind_catalogs <- function(..., .id = "AOI") {
   print("lala")
 
