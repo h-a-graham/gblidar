@@ -14,10 +14,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
   - [x] Added options for merging rasters and exporting as SpatRaster,
     stars of character.
   - [x] Generic merge for all rasters in gbl\_catalog.
-  - [ ] Add special functions for hitting the WCS data to get faster
+  - [x] Add special functions for hitting the WCS data to get faster
     access to large composite areas.
-  - [ ] chunk large requested areas to prevent exceeding the EA API
-    limit.
   - [ ] Add Scottish Data
   - [ ] Add Welsh Data
   - [ ] Write Tests
@@ -38,25 +36,29 @@ pak::pkg_install("h-a-graham/gblidar")
 
 ## Example
 
-This is a super quick demo
+This is a super quick demo where we can query the Environment Agency’s
+entire LIDAR catalogue using the `eng_search` function. This will return
+a `gbl_catalog` object which can be used to filter the assets and then
+merge them into a single raster. In this example we search the area
+around Scafell Pike, use the `filter_catalog` function to reduce the
+number of assets to just the 2m DTM composite for 2022, and then use the
+`merge_assets` function to merge all the assets into a single raster. By
+default the raster is saved to disk and the  
+file path is returned, but this can be changed using `raster_class`
+argument in `merge_assets` to return a `stars` or `SpatRaster` object
+(or you can alternatively set the global option
+`gblidar.out_raster_type` to “stars” or “SpatRaster” as in the example
+below).
 
 ``` r
 library(gblidar)
 library(sf)
-#> Linking to GEOS 3.12.1, GDAL 3.6.4, PROJ 9.1.1; sf_use_s2() is TRUE
-#> WARNING: different compile-time and runtime versions for GEOS found:
-#> Linked against: 3.12.1-CAPI-1.18.1 compiled against: 3.11.1-CAPI-1.17.1
-#> It is probably a good idea to reinstall sf, and maybe rgeos and rgdal too
+#> Linking to GEOS 3.12.1, GDAL 3.8.3, PROJ 9.3.1; sf_use_s2() is TRUE
 if (rlang::is_installed("terra")) {
   library(terra)
   options(gblidar.out_raster_type = "SpatRaster")
 }
-#> terra 1.7.50
-#> WARNING: different compile-time and run-time versions of GEOS
-#> Compiled with:3.11.1-CAPI-1.17.1
-#>  Running with:3.12.1-CAPI-1.18.1
-#> 
-#> You should reinstall package 'terra'
+#> terra 1.7.71
 
 scafell_box <- st_point(c(321633, 507181)) |>
   st_buffer(2000) |>
@@ -138,4 +140,30 @@ plot(scafell_raster, col = grDevices::hcl.colors(50, palette = "Sunset"))
 
 <img src="man/figures/README-example-1.png" width="100%" />
 
-…
+The EA have now released their latest composite products as WCS services
+(Awesome\!). To make best use of this, we provide the `eng_composite`
+function which can be used to directly download only the data you need
+for any area in England. This is significantly faster than the
+`eng_search` function and is preferred if you are only interested in the
+latest composite products. Both elevation and hillshade data are
+available for “fz\_dsm” (first return DSM), “dsm”, “dtm”, and “vom”.
+
+``` r
+options(gblidar.progress = FALSE) # for readability in this example.
+
+search_box <- st_point(c(532054, 181145)) |>
+  st_buffer(500) |>
+  st_sfc() |>
+  st_set_crs(27700)
+
+# the elevation data for the first return DSM
+fz_dsm <- eng_composite(search_box, product = "fz_dsm")
+# the hillshade data for the last return DSM
+dsm_hs <- eng_composite(search_box, product = "dsm", product_type = "hillshade")
+
+par(mfrow = c(1, 2))
+plot(fz_dsm, col = hcl.colors(150, "mako"))
+plot(dsm_hs, col = hcl.colors(256, "Blues"), legend = FALSE)
+```
+
+<img src="man/figures/README-example2-1.png" width="100%" />
