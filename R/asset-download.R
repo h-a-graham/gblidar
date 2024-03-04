@@ -44,9 +44,10 @@
 #' * save_location the detination that the file is saved in.
 #' @export
 #'
-#' @examples
-asset_download <- function(x, target_dir, resume = FALSE,
-                           progress = TRUE, timeout = Inf) {
+#'
+asset_download <- function(
+    x, target_dir, resume = FALSE,
+    progress = TRUE, timeout = Inf) {
   dl_files <- gbl_urls(x)
   file_names <- gbl_paths(x)
 
