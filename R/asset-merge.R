@@ -3,9 +3,11 @@
 #' uses gdal warp to merge raster assets into a single file.
 #'
 #' @param x A `gbl_catalog` object
+#' @param mask logical, should the output be masked to the AOI?
 #' @param destination out put destination. if NUll then a tempfile is created
 #' @param resample resampling method, default near
 #' @param compression the tif compression method to use - e.g. "DEFLATE" or "LZW"
+#' @param nodata the nodata value to use
 #' @param options character vector with gdal options.
 #' @param raster_class The class in which to return the raster. can be any of
 #' "character" (in which case the file path is returned - the default),
@@ -15,7 +17,7 @@
 #' @return A raster file path
 #' @export
 #'
-#' @examples
+#' @examplesIf curl::has_internet()
 #' scafell_box <- sf::st_point(c(321633, 507181)) |>
 #'   sf::st_buffer(100) |>
 #'   sf::st_sfc() |>
@@ -68,11 +70,13 @@ merge_assets <- function(
 
 
 
-#' Title
+#' unpack a gbl_catalog object
 #'
-#' @param x
-#'
+#' @param x A `gbl_catalog` object
+#' @param progress logical, show a progress bar?
 #' @return a vector of urls
+#' @noRd
+#' @keywords internal
 unpack_assets <- function(x, progress) {
   td <- tempdir()
   assets_zipped <- asset_download(x, td, progress = progress)

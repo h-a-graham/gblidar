@@ -7,7 +7,7 @@
 #' @return An object of class `gbl_catalog`
 #' @export
 #'
-#' @examples
+#' @examplesIf curl::has_internet()
 #' scafell_box <- sf::st_point(c(321633, 507181)) |>
 #'   sf::st_buffer(100) |>
 #'   sf::st_sfc() |>

@@ -4,10 +4,12 @@
 \alias{print.gbl_catalog}
 \title{print a gbl_catalog object}
 \usage{
-\method{print}{gbl_catalog}(x)
+\method{print}{gbl_catalog}(x, ...)
 }
 \arguments{
-\item{x}{}
+\item{x}{a gbl_catalog object}
+
+\item{...}{not used}
 }
 \description{
 print a gbl_catalog object

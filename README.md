@@ -10,7 +10,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 gblidar aims to make accessing LiDAR data from across Great Britain as
-easy as possible. It provides functions to search the Environment
+easy as possible. It provides functions to searc\>h the Environment
 Agency’s LiDAR catalogue, download composite products, and merge the
 data into a single raster. It also provides functions to access the data
 from the EA’s WCS services, which is significantly faster but only
@@ -20,14 +20,14 @@ to include Scotland and Wales in the future.
 
 # To Do List:
 
-  - [x] Added options for merging rasters and exporting as SpatRaster,
-    stars of character.
-  - [x] Generic merge for all rasters in gbl\_catalog.
-  - [x] Add special functions for hitting the WCS data to get faster
-    access to large composite areas.
-  - [ ] Add Scottish Data
-  - [ ] Add Welsh Data
-  - [ ] Write Tests
+- [x] Added options for merging rasters and exporting as SpatRaster,
+  stars of character.
+- [x] Generic merge for all rasters in gbl_catalog.
+- [x] Add special functions for hitting the WCS data to get faster
+  access to large composite areas.
+- [ ] Add Scottish Data
+- [ ] Add Welsh Data
+- [ ] Write Tests
 
 ## Installation
 
@@ -57,12 +57,15 @@ below).
 ``` r
 library(gblidar)
 library(sf)
-#> Linking to GEOS 3.12.1, GDAL 3.8.3, PROJ 9.3.1; sf_use_s2() is TRUE
+#> Linking to GEOS 3.12.2, GDAL 3.8.4, PROJ 9.3.1; sf_use_s2() is TRUE
+#> WARNING: different compile-time and runtime versions for GEOS found:
+#> Linked against: 3.12.2-CAPI-1.18.2 compiled against: 3.12.1-CAPI-1.18.1
+#> It is probably a good idea to reinstall sf (and maybe lwgeom too)
 if (rlang::is_installed("terra")) {
   library(terra)
   options(gblidar.out_raster_type = "SpatRaster")
 }
-#> terra 1.7.71
+#> terra 1.8.0
 
 scafell_box <- st_point(c(321633, 507181)) |>
   st_buffer(2000) |>
@@ -72,7 +75,8 @@ scafell_box <- st_point(c(321633, 507181)) |>
 scafell_catalog <- eng_search(scafell_box)
 
 print(scafell_catalog)
-#> Data Catalog
+#> 
+#> ── < gbl_catalog > ─────────────────────────────────────────────────────────────
 #> # A tibble: 28 × 5
 #>    product                                   resolution  year filenames urls  
 #>    <chr>                                          <dbl> <int> <list>    <list>
@@ -103,15 +107,13 @@ print(scafell_catalog)
 #> 25 National LIDAR Programme Point Cloud               1  2019 <chr [7]> <chr> 
 #> 26 National LIDAR Programme Point Cloud               1  2021 <chr [2]> <chr> 
 #> 27 National LIDAR Programme VOM                       1  2019 <chr [7]> <chr> 
-#> 28 National LIDAR Programme VOM                       1  2021 <chr [2]> <chr>
-#> AOI Geometry
+#> 28 National LIDAR Programme VOM                       1  2021 <chr [2]> <chr> 
 #> Geometry set for 1 feature 
 #> Geometry type: POLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: 319633 ymin: 505181 xmax: 323633 ymax: 509181
 #> Projected CRS: OSGB36 / British National Grid
 #> POLYGON ((323633 507181, 323630.3 507076.3, 323...
-#> Tile Names
 #> [1] "NY10NE" "NY20NW"
 
 DTM_catalog <- scafell_catalog |>
@@ -122,19 +124,18 @@ DTM_catalog <- scafell_catalog |>
   )
 
 print(DTM_catalog)
-#> Data Catalog
+#> 
+#> ── < gbl_catalog > ─────────────────────────────────────────────────────────────
 #> # A tibble: 1 × 5
 #>   product             resolution  year filenames urls     
 #>   <chr>                    <dbl> <int> <list>    <list>   
 #> 1 LIDAR Composite DTM          2  2022 <chr [9]> <chr [9]>
-#> AOI Geometry
 #> Geometry set for 1 feature 
 #> Geometry type: POLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: 319633 ymin: 505181 xmax: 323633 ymax: 509181
 #> Projected CRS: OSGB36 / British National Grid
 #> POLYGON ((323633 507181, 323630.3 507076.3, 323...
-#> Tile Names
 #> [1] "NY10NE" "NY20NW"
 
 scafell_raster <- merge_assets(DTM_catalog, mask = TRUE)
@@ -145,12 +146,12 @@ plot(scafell_raster, col = grDevices::hcl.colors(50, palette = "Sunset"))
 <img src="man/figures/README-example-1.png" width="100%" />
 
 The EA have now released their latest composite products as WCS services
-(Awesome\!). To make best use of this, we provide the `eng_composite`
+(Awesome!). To make best use of this, we provide the `eng_composite`
 function which can be used to directly download only the data you need
 for any area in England. This is significantly faster than the
 `eng_search` function and is preferred if you are only interested in the
 latest composite products. Both elevation and hillshade data are
-available for “fz\_dsm” (first return DSM), “dsm”, “dtm”, and “vom”.
+available for “fz_dsm” (first return DSM), “dsm”, “dtm”, and “vom”.
 
 ``` r
 options(gblidar.progress = FALSE) # for readability in this example.

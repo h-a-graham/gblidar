@@ -121,12 +121,12 @@ wcs_layers <- function(wcs_url) {
 #' @return A `character` file path, `SpatRaster` or `stars` object, depending
 #' on the `raster_class` argument.
 #' @export
-#' @examples
+#' @examplesIf curl::has_internet()
 #'
-#' search_box <- st_point(c(370126.5, 538567.1)) |>
-#'   st_buffer(50) |>
-#'   st_sfc() |>
-#'   st_set_crs(27700)
+#' search_box <- sf::st_point(c(370126.5, 538567.1)) |>
+#'   sf::st_buffer(50) |>
+#'   sf::st_sfc() |>
+#'   sf::st_set_crs(27700)
 #'
 #' fz_dsm <- eng_composite(search_box, product = "fz_dsm")
 #' dsm <- eng_composite(search_box, "dsm")

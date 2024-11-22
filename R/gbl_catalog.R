@@ -26,16 +26,16 @@ bng_tile_intersect <- function(.aoi) {
 
 #' print a gbl_catalog object
 #'
-#' @param x
-#'
+#' @param x a gbl_catalog object
+#' @param ... not used
 #' @export
 #'
-print.gbl_catalog <- function(x) {
-  message(crayon::cyan("Data Catalog"))
+print.gbl_catalog <- function(x, ...) {
+  cli::cli_h1("< gbl_catalog >")
   print(x$gbl_tab, n = nrow(x$gbl_tab))
-  message(crayon::green("AOI Geometry"))
+  cli::col_green("AOI Geometry")
   print(x$aoi)
-  message(crayon::cyan("Tile Names"))
+  cli::col_cyan("Tile Names")
   print(x$tile_names)
 }
 
@@ -43,9 +43,10 @@ print.gbl_catalog <- function(x) {
 #' Plot a gbl_catalog object
 #'
 #' @param x a gbl_catalog object
+#' @param ... not used
 #' @export
 #'
-plot.gbl_catalog <- function(x) {
+plot.gbl_catalog <- function(x, ...) {
   plot(sf::st_geometry(x$search_aoi))
   plot(sf::st_geometry(x$aoi), col = "#21C6C1", add = TRUE)
 }
@@ -53,14 +54,16 @@ plot.gbl_catalog <- function(x) {
 
 #' filter a gbl_catalog object
 #'
-#' wrapper for dplyr::filter for `gbl_catalog` objects
+#' wrapper for \link[dplyr]{filter} for `gbl_catalog` objects
 #'
 #' @param x A gbl_catalog object
-#'
+#' @param ... filter conditions see
+#' @param .by, .preserve passed to \link[dplyr]{filter}
+#' @param .preserve logical passed to \link[dplyr]{filter}
 #' @return A filtered gbl_catalog object
 #' @export
 #'
-#' @examples
+#' @examplesIf curl::has_internet()
 #' scafell_box <- sf::st_point(c(321633, 507181)) |>
 #'   sf::st_buffer(100) |>
 #'   sf::st_sfc() |>
@@ -94,7 +97,7 @@ filter_catalog <- function(x, ..., .by = NULL, .preserve = FALSE) {
 #'
 #' wrapper for dplyr::bind_rows for `gbl_catalog` objects
 #'
-#' @param ...gbl_catalog objects to combine
+#' @param ... gbl_catalog objects to combine
 #' @param .id The name of an optional identifier column. Provide a string to
 #' create an output column that identifies each input. The column will use names
 #' if available, otherwise it will use positions.

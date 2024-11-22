@@ -8,14 +8,21 @@ filter_catalog(x, ..., .by = NULL, .preserve = FALSE)
 }
 \arguments{
 \item{x}{A gbl_catalog object}
+
+\item{...}{filter conditions see}
+
+\item{.by, }{.preserve passed to \link[dplyr]{filter}}
+
+\item{.preserve}{logical passed to \link[dplyr]{filter}}
 }
 \value{
 A filtered gbl_catalog object
 }
 \description{
-wrapper for dplyr::filter for \code{gbl_catalog} objects
+wrapper for \link[dplyr]{filter} for \code{gbl_catalog} objects
 }
 \examples{
+\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 scafell_box <- sf::st_point(c(321633, 507181)) |>
   sf::st_buffer(100) |>
   sf::st_sfc() |>
@@ -29,4 +36,5 @@ DTM_catalog <- scafell_catalog |>
     resolution == 2,
     year == 2022
   )
+\dontshow{\}) # examplesIf}
 }

@@ -69,11 +69,12 @@ Environment Agency's Web Coverage Service (WCS) for the following products:
 "fz_dsm", "dsm", "dtm", "vom".
 }
 \examples{
+\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-search_box <- st_point(c(370126.5, 538567.1)) |>
-  st_buffer(50) |>
-  st_sfc() |>
-  st_set_crs(27700)
+search_box <- sf::st_point(c(370126.5, 538567.1)) |>
+  sf::st_buffer(50) |>
+  sf::st_sfc() |>
+  sf::st_set_crs(27700)
 
 fz_dsm <- eng_composite(search_box, product = "fz_dsm")
 dsm <- eng_composite(search_box, "dsm")
@@ -82,5 +83,5 @@ vom <- eng_composite(search_box, "vom", "elevation")
 
 dsm_hs <- eng_composite(search_box, product = "dsm", product_type = "hillshade")
 dtm_hs <- eng_composite(search_box, "dtm", "hillshade")
-
+\dontshow{\}) # examplesIf}
 }

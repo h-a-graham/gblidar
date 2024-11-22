@@ -19,11 +19,15 @@ merge_assets(
 \arguments{
 \item{x}{A \code{gbl_catalog} object}
 
+\item{mask}{logical, should the output be masked to the AOI?}
+
 \item{destination}{out put destination. if NUll then a tempfile is created}
 
 \item{resample}{resampling method, default near}
 
 \item{compression}{the tif compression method to use - e.g. "DEFLATE" or "LZW"}
+
+\item{nodata}{the nodata value to use}
 
 \item{options}{character vector with gdal options.}
 
@@ -40,6 +44,7 @@ A raster file path
 uses gdal warp to merge raster assets into a single file.
 }
 \examples{
+\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 scafell_box <- sf::st_point(c(321633, 507181)) |>
   sf::st_buffer(100) |>
   sf::st_sfc() |>
@@ -55,4 +60,5 @@ DTM_catalog <- scafell_catalog |>
   )
 DTM_raster <- merge_assets(DTM_catalog)
 DTM_raster
+\dontshow{\}) # examplesIf}
 }

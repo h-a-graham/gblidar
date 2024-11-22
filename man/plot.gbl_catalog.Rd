@@ -4,10 +4,12 @@
 \alias{plot.gbl_catalog}
 \title{Plot a gbl_catalog object}
 \usage{
-\method{plot}{gbl_catalog}(x)
+\method{plot}{gbl_catalog}(x, ...)
 }
 \arguments{
 \item{x}{a gbl_catalog object}
+
+\item{...}{not used}
 }
 \description{
 Plot a gbl_catalog object

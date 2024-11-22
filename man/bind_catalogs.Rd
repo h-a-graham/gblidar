@@ -7,11 +7,11 @@
 bind_catalogs(..., .id = "AOI")
 }
 \arguments{
+\item{...}{gbl_catalog objects to combine}
+
 \item{.id}{The name of an optional identifier column. Provide a string to
 create an output column that identifies each input. The column will use names
 if available, otherwise it will use positions.}
-
-\item{...gbl_catalog}{objects to combine}
 }
 \value{
 A filtered gbl_catalog object

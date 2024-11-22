@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 gblidar aims to make accessing LiDAR data from across Great Britain as easy as possible.
-It provides functions to search the Environment Agency's LiDAR catalogue, download
+It provides functions to searc>h the Environment Agency's LiDAR catalogue, download
 composite products, and merge the data into a single raster. It also provides
 functions to access the data from the EA's WCS services, which is significantly
 faster but only available for some composite products. This package is still in

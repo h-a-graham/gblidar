@@ -18,10 +18,12 @@ An object of class \code{gbl_catalog}
 Search the Environment Agency LiDAR/Geo API for data in England.
 }
 \examples{
+\dontshow{if (curl::has_internet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 scafell_box <- sf::st_point(c(321633, 507181)) |>
   sf::st_buffer(100) |>
   sf::st_sfc() |>
   sf::st_set_crs(27700)
 scafell_catalog <- eng_search(scafell_box)
 print(scafell_catalog)
+\dontshow{\}) # examplesIf}
 }
